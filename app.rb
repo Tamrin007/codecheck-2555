@@ -8,13 +8,13 @@ require_relative './app/bot'
 
 set :server, 'thin'
 set :sockets, []
+set :pong, 'pong'
 
 get '/' do
     if !request.websocket?
         erb :index
     else
-        request.websocket do
-            |ws|
+        request.websocket do |ws|
             ws.onopen do
                 puts "Connection opened"
                 settings.sockets << ws
@@ -27,13 +27,13 @@ get '/' do
                     send_msg = {"data" => msg}
                     conn.send(send_msg.to_json)
                 end
-                words = msg.split(" ")
-                if words[0] == "bot" && words[1] == "ping" && words.length == 2 then
+                if msg == "bot ping" then
                     settings.sockets.each do |conn|
-                        send_msg = {"data" => "pong"}
-                        conn.send(send_msg.to_json)
+                        send_pong = {"data" => settings.pong}
+                        conn.send(send_pong.to_json)
                     end
                 end
+                words = msg.split(" ")
                 if words[0] == "bot" && words.length == 3 then
                     input = {
                         "command": words[1],
