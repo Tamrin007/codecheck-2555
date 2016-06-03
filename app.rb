@@ -39,6 +39,11 @@ get '/' do
                         send_msg = {"data" => bot.hash}
                         conn.send(send_msg.to_json)
                     end
+                elsif words[0] = "bot" && words[1] == "ping" && words.length == 2 then
+                    connections.each do |conn|
+                        send_msg = {"data" => "pong"}
+                        conn.send(send_msg.to_json)
+                    end
                 end
             end
         end
