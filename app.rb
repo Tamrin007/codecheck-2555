@@ -28,7 +28,7 @@ get '/' do
                     conn.send(send_msg.to_json)
                 end
                 words = msg.split(" ")
-                if words[0] == "bot" && words[1] = "ping" && words.length == 2 then
+                if words[0] == "bot" && words[1] == "ping" && words.length == 2 then
                     settings.sockets.each do |conn|
                         send_msg = {"data" => "pong"}
                         conn.send(send_msg.to_json)
