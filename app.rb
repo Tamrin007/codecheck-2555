@@ -17,30 +17,31 @@ get '/' do
             |ws|
             ws.onopen do
                 puts "Connection opened"
-                connections << ws
+                settings.sockets << ws
             end
 
             ws.onclose { puts "Connection closed" }
 
             ws.onmessage do |msg|
-                connections.each do |conn|
+                settings.sockets.each do |conn|
                     send_msg = {"data" => msg}
                     conn.send(send_msg.to_json)
                 end
                 words = msg.split(" ")
-                if words[0] = "bot" && words.length == 3 then
+                if words[0] == "bot" && words.length == 3 then
                     input = {
                         "command": words[1],
                         "data": words[2]
                     }
                     bot = Bot.new(input)
                     bot.generateHash()
-                    connections.each do |conn|
+                    settings.sockets.each do |conn|
                         send_msg = {"data" => bot.hash}
                         conn.send(send_msg.to_json)
                     end
-                elsif words[0] = "bot" && words[1] == "ping" && words.length == 2 then
-                    connections.each do |conn|
+                end
+                if words[0] == "bot" && words[1] = "ping" && words.length == 2 then
+                    settings.sockets.each do |conn|
                         send_msg = {"data" => "pong"}
                         conn.send(send_msg.to_json)
                     end
